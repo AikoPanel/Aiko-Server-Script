@@ -174,7 +174,7 @@ install_Aiko-Server() {
     fi
     curl -o /usr/bin/Aiko-Server -Ls https://raw.githubusercontent.com/Github-Aiko/Aiko-Server-script/master/Aiko-Server.sh
     chmod +x /usr/bin/Aiko-Server
-    #ln -s /usr/bin/Aiko-Server /usr/bin/Aiko-Server # lowercase compatible
+    ln -s /usr/bin/Aiko-Server /usr/bin/aiko-server # compatible lowercase
     chmod +x /usr/bin/aiko-server
     cd $cur_dir
     rm -f install.sh
