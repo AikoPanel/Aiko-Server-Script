@@ -109,7 +109,7 @@ update() {
 
 config() {
     echo "Aiko-Server will automatically attempt to restart after modifying the configuration"
-    vi /etc/Aiko-Server/aiko.yml
+    nano /etc/Aiko-Server/aiko.yml
     sleep 2
     check_status
     case $? in
