@@ -104,20 +104,20 @@ install_Aiko-Server() {
     cd /usr/local/Aiko-Server/
 
     if  [ $# == 0 ] ;then
-        last_version=$(curl -Ls "https://api.github.com/repos/Yuzuki616/Aiko-Server/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        last_version=$(curl -Ls "https://api.github.com/repos/Github-Aiko/Aiko-Server/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
         if [[ ! -n "$last_version" ]]; then
             echo -e "${red}Failed to check Aiko-Server version. It may be due to exceeding the Github API limit. Please try again later or manually specify the Aiko-Server version for installation.${plain}"
             exit 1
         fi
         echo -e "Detected the latest version of Aiko-Server: ${last_version}, starting installation"
-        wget -q -N --no-check-certificate -O /usr/local/Aiko-Server/Aiko-Server-linux.zip https://github.com/Yuzuki616/Aiko-Server/releases/download/${last_version}/Aiko-Server-linux-${arch}.zip
+        wget -q -N --no-check-certificate -O /usr/local/Aiko-Server/Aiko-Server-linux.zip https://github.com/Github-Aiko/Aiko-Server/releases/download/${last_version}/Aiko-Server-linux-${arch}.zip
         if [[ $? -ne 0 ]]; then
             echo -e "${red}Failed to download Aiko-Server. Please make sure your server can download files from Github.${plain}"
             exit 1
         fi
     else
         last_version=$1
-        url="https://github.com/Yuzuki616/Aiko-Server/releases/download/${last_version}/Aiko-Server-linux-${arch}.zip"
+        url="https://github.com/Github-Aiko/Aiko-Server/releases/download/${last_version}/Aiko-Server-linux-${arch}.zip"
         echo -e "Starting installation of Aiko-Server v$1"
         wget -q -N --no-check-certificate -O /usr/local/Aiko-Server/Aiko-Server-linux.zip ${url}
         if [[ $? -ne 0 ]]; then
@@ -131,7 +131,7 @@ install_Aiko-Server() {
     chmod +x Aiko-Server
     mkdir /etc/Aiko-Server/ -p
     rm /etc/systemd/system/Aiko-Server.service -f
-    file="https://github.com/Yuzuki616/Aiko-Server-script/raw/master/Aiko-Server.service"
+    file="https://github.com/Github-Aiko/Aiko-Server-script/raw/master/Aiko-Server.service"
     wget -q -N --no-check-certificate -O /etc/systemd/system/Aiko-Server.service ${file}
     #cp -f Aiko-Server.service /etc/systemd/system/
     systemctl daemon-reload
@@ -144,7 +144,7 @@ install_Aiko-Server() {
     if [[ ! -f /etc/Aiko-Server/config.yml ]]; then
         cp config.yml /etc/Aiko-Server/
         echo -e ""
-        echo -e "For a fresh installation, please refer to the tutorial: https://github.com/Yuzuki616/Aiko-Server and configure the necessary content"
+        echo -e "For a fresh installation, please refer to the tutorial: https://github.com/Github-Aiko/Aiko-Server and configure the necessary content"
     else
         systemctl start Aiko-Server
         sleep 2
@@ -172,7 +172,7 @@ install_Aiko-Server() {
     if [[ ! -f /etc/Aiko-Server/rulelist ]]; then
         cp rulelist /etc/Aiko-Server/
     fi
-    curl -o /usr/bin/Aiko-Server -Ls https://raw.githubusercontent.com/Yuzuki616/Aiko-Server-script/master/Aiko-Server.sh
+    curl -o /usr/bin/Aiko-Server -Ls https://raw.githubusercontent.com/Github-Aiko/Aiko-Server-script/master/Aiko-Server.sh
     chmod +x /usr/bin/Aiko-Server
     #ln -s /usr/bin/Aiko-Server /usr/bin/Aiko-Server # lowercase compatible
     chmod +x /usr/bin/Aiko-Server
