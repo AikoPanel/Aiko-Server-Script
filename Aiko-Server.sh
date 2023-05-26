@@ -373,13 +373,13 @@ generate_config_file() {
         mv aiko.yml aiko.yml.bak
         cat <<EOF > /etc/Aiko-Server/aiko.yml
 Log:
-  Level: warning # Log level: none, error, warning, info, debug 
+  Level: none # Log level: none, error, warning, info, debug 
   AccessPath: # /etc/Aiko-Server/access.Log
   ErrorPath: # /etc/Aiko-Server/error.log
-DnsConfigPath: # /etc/Aiko-Server/dns.json # Path to dns config, check https://xtls.github.io/config/base/dns/ for help
+DnsConfigPath: # /etc/Aiko-Server/dns.json # Path to dns config, check https://xtls.github.io/config/dns.html for help
+RouteConfigPath: # /etc/Aiko-Server/route.json # Path to route config, check https://xtls.github.io/config/routing.html for help
 InboundConfigPath: # /etc/Aiko-Server/custom_inbound.json # Path to custom inbound config, check https://xtls.github.io/config/inbound.html for help
-RouteConfigPath: # /etc/Aiko-Server/route.json # Path to route config, check https://xtls.github.io/config/base/route/ for help
-OutboundConfigPath: # /etc/Aiko-Server/custom_outbound.json # Path to custom outbound config, check https://xtls.github.io/config/base/outbound/ for help
+OutboundConfigPath: # /etc/Aiko-Server/custom_outbound.json # Path to custom outbound config, check https://xtls.github.io/config/outbound.html for help
 ConnetionConfig:
   Handshake: 4 # Handshake time limit, Second
   ConnIdle: 30 # Connection idle time limit, Second
@@ -387,32 +387,67 @@ ConnetionConfig:
   DownlinkOnly: 4 # Time limit when the connection is closed after the uplink is closed, Second
   BufferSize: 64 # The internal cache size of each connection, kB 
 Nodes:
-  -
-    ApiConfig:
+  - ApiConfig:
       ApiHost: "$ApiHost"
       ApiKey: "$ApiKey"
       NodeID: $NodeID
       NodeType: $NodeType # Node type: V2ray, Shadowsocks, Trojan, Shadowsocks-Plugin
       Timeout: 30 # Timeout for the api request
-      EnableVless: false # Enable Vless for V2ray Type
-      EnableXTLS: false # Enable XTLS for V2ray and Trojan
-      SpeedLimit: 0 # Mbps, Local settings will replace remote settings, 0 means disable
-      DeviceLimit: 0 # Local settings will replace remote settings, 0 means disable
       RuleListPath: # /etc/Aiko-Server/rulelist Path to local rulelist file
     ControllerConfig:
       ListenIP: 0.0.0.0 # IP address you want to listen
       SendIP: 0.0.0.0 # IP address you want to send pacakage
-      UpdatePeriodic: 60 # Time to update the nodeinfo, how many sec.
       EnableDNS: false # Use custom DNS config, Please ensure that you set the dns.json well
       DNSType: AsIs # AsIs, UseIP, UseIPv4, UseIPv6, DNS strategy
+      EnableVless: false # Enable Vless for V2ray Type
       EnableProxyProtocol: false # Only works for WebSocket and TCP
+      EnableXtls: false  # Enable xtls-rprx-vision, only vless
+      EnableReality: false # Enable reality
+      RealityConfig: # This config like RealityObject for xray-core, please check https://xtls.github.io/config/transport.html#realityobject
+        Dest: 80 # Same fallback dest
+        Xver: 0 # Same fallback xver
+        ServerNames:
+          - "example.com"
+          - "www.example.com"
+        PrivateKey: "" # Private key for server
+        MinClientVer: "" # Min client version
+        MaxClientVer: "" # Max client version
+        MaxTimeDiff: 0 # Max time difference, ms
+        ShortIds: # Short ids
+          - ""
+          - "0123456789abcdef"
       EnableFallback: false # Only support for Trojan and Vless
-      FallBackConfigs:  # Support multiple fallbacks
-        -
-          SNI: # TLS SNI(Server Name Indication), Empty for any
+      FallBackConfigs: # Support multiple fallbacks
+        - SNI: # TLS SNI(Server Name Indication), Empty for any
+          Alpn: # Alpn, Empty for any
           Path: # HTTP PATH, Empty for any
-          Dest: 80 # Required, Destination of fallback, check https://xtls.github.io/config/fallback/ for details.
+          Dest: 80 # Required, Destination of fallback, check https://xtls.github.io/config/features/fallback.html for details.
           ProxyProtocolVer: 0 # Send PROXY protocol version, 0 for dsable
+      LimitConfig:
+        EnableRealtime: false # Check device limit on real time
+        SpeedLimit: 0 # Mbps, Local settings will replace remote settings, 0 means disable
+        DeviceLimit: 0 # Local settings will replace remote settings, 0 means disable
+        ConnLimit: 0 # Connecting limit, only working for TCP, 0mean
+        EnableIpRecorder: false # Enable online ip report
+        IpRecorderConfig:
+          Type: "Recorder" # Recorder type: Recorder, Redis
+          RecorderConfig:
+            Url: "http://127.0.0.1:123" # Report url
+            Token: "123" # Report token
+            Timeout: 10 # Report timeout, sec.
+          RedisConfig:
+            Address: "127.0.0.1:6379" # Redis address
+            Password: "" # Redis password
+            DB: 0 # Redis DB
+            Expiry: 60 # redis expiry time, sec.
+          Periodic: 60 # Report interval, sec.
+          EnableIpSync: false # Enable online ip sync
+        EnableDynamicSpeedLimit: false # Enable dynamic speed limit
+        DynamicSpeedLimitConfig:
+          Periodic: 60 # Time to check the user traffic , sec.
+          Traffic: 0 # Traffic limit, MB
+          SpeedLimit: 0 # Speed limit, Mbps
+          ExpireTime: 0 # Time limit, sec.
       CertConfig:
         CertMode: dns # Option about how to get certificate: none, file, http, dns. Choose "none" will forcedly disable the tls config.
         CertDomain: "node1.test.com" # Domain to cert
