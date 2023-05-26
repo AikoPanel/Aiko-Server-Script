@@ -109,7 +109,7 @@ update() {
 
 config() {
     echo "Aiko-Server will automatically attempt to restart after modifying the configuration"
-    vi /etc/Aiko-Server/config.yml
+    vi /etc/Aiko-Server/aiko.yml
     sleep 2
     check_status
     case $? in
@@ -350,8 +350,8 @@ generate_config_file() {
     echo -e "${yellow}Aiko-Server Configuration File Wizard${plain}"
     echo -e "${red}Please read the following notes:${plain}"
     echo -e "${red}1. This feature is currently in testing${plain}"
-    echo -e "${red}2. The generated configuration file will be saved to /etc/Aiko-Server/config.yml${plain}"
-    echo -e "${red}3. The original configuration file will be saved to /etc/Aiko-Server/config.yml.bak${plain}"
+    echo -e "${red}2. The generated configuration file will be saved to /etc/Aiko-Server/aiko.yml${plain}"
+    echo -e "${red}3. The original configuration file will be saved to /etc/Aiko-Server/aiko.yml.bak${plain}"
     echo -e "${red}4. TLS is not currently supported${plain}"
     read -rp "Do you want to continue generating the configuration file? (y/n)" generate_config_file_continue
     if [[ $generate_config_file_continue =~ "y"|"Y" ]]; then
@@ -370,8 +370,8 @@ generate_config_file() {
             * ) NodeType="Shadowsocks" ;;
         esac
         cd /etc/Aiko-Server
-        mv config.yml config.yml.bak
-        cat <<EOF > /etc/Aiko-Server/config.yml
+        mv aiko.yml aiko.yml.bak
+        cat <<EOF > /etc/Aiko-Server/aiko.yml
 Log:
   Level: warning # Log level: none, error, warning, info, debug 
   AccessPath: # /etc/Aiko-Server/access.Log
