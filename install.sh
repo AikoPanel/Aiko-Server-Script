@@ -141,8 +141,8 @@ install_Aiko-Server() {
     cp geoip.dat /etc/Aiko-Server/
     cp geosite.dat /etc/Aiko-Server/
 
-    if [[ ! -f /etc/Aiko-Server/config.yml ]]; then
-        cp config.yml /etc/Aiko-Server/
+    if [[ ! -f /etc/Aiko-Server/aiko.yml ]]; then
+        cp aiko.yml /etc/Aiko-Server/
         echo -e ""
         echo -e "For a fresh installation, please refer to the tutorial: https://github.com/Github-Aiko/Aiko-Server and configure the necessary content"
     else
