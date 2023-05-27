@@ -374,9 +374,9 @@ generate_config_file() {
         echo -e "${green}2. Disable${plain}"
         read -rp "Please enter the Sniffing (1-2, default 2): " Sniffing
         case "$Sniffing" in
-            1 ) Sniffing="Enable" ;;
-            2 ) Sniffing="Disable" ;;
-            * ) Sniffing="Disable" ;;
+            1 ) Sniffing="false" ;;
+            2 ) Sniffing="true" ;;
+            * ) Sniffing="true" ;;
         esac
         cd /etc/Aiko-Server
         mv aiko.yml aiko.yml.bak
