@@ -399,6 +399,7 @@ Nodes:
       SendIP: 0.0.0.0 # IP address you want to send pacakage
       EnableDNS: false # Use custom DNS config, Please ensure that you set the dns.json well
       DNSType: AsIs # AsIs, UseIP, UseIPv4, UseIPv6, DNS strategy
+      DisableSniffing: true # Disable sniffing
       EnableVless: false # Enable Vless for V2ray Type
       EnableProxyProtocol: false # Only works for WebSocket and TCP
       EnableXtls: false  # Enable xtls-rprx-vision, only vless
