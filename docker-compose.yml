@@ -1,6 +1,6 @@
 version: '3'
 services: 
-  xrayr: 
+  aiko-server: 
     image: aikocute/aiko-server:latest
     volumes:
       - ./config:/etc/Aiko-Server/
