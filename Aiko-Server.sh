@@ -367,7 +367,16 @@ generate_config_file() {
             1 ) NodeType="Shadowsocks" ;;
             2 ) NodeType="V2ray" ;;
             3 ) NodeType="Trojan" ;;
-            * ) NodeType="Shadowsocks" ;;
+            * ) NodeType="V2ray" ;;
+        esac
+        echo -e "${yellow}Please select the Sniffing is Enable or Disable, Default is Disable :${plain}"
+        echo -e "${green}1. Enable${plain}"
+        echo -e "${green}2. Disable${plain}"
+        read -rp "Please enter the Sniffing (1-2, default 2): " Sniffing
+        case "$Sniffing" in
+            1 ) Sniffing="Enable" ;;
+            2 ) Sniffing="Disable" ;;
+            * ) Sniffing="Disable" ;;
         esac
         cd /etc/Aiko-Server
         mv aiko.yml aiko.yml.bak
@@ -399,7 +408,7 @@ Nodes:
       SendIP: 0.0.0.0 # IP address you want to send pacakage
       EnableDNS: false # Use custom DNS config, Please ensure that you set the dns.json well
       DNSType: AsIs # AsIs, UseIP, UseIPv4, UseIPv6, DNS strategy
-      DisableSniffing: true # Disable sniffing
+      DisableSniffing: $Sniffing # Disable sniffing
       EnableVless: false # Enable Vless for V2ray Type
       EnableProxyProtocol: false # Only works for WebSocket and TCP
       EnableXtls: false  # Enable xtls-rprx-vision, only vless
