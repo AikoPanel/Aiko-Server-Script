@@ -403,6 +403,19 @@ Nodes:
       NodeType: $NodeType # Node type: V2ray, Shadowsocks, Trojan, Shadowsocks-Plugin
       Timeout: 30 # Timeout for the api request
       RuleListPath: # /etc/Aiko-Server/rulelist Path to local rulelist file
+      CountryRestriction: false # Enable country restriction ( Now Support Only Linux )
+      CountryRestrictionConfig: # Only Country can access this node
+        CountryList: # Country list ( Now support : VietNam , China, Japan )
+          - VietNam
+          - China
+          - Japan
+        IpOtherList: # List Ip you want block input ( Recommend : Ip of your server)
+          - 103.123.123.123
+        UnlockPort: # List port you want unlock input ( Recommend : 22, 80, 443)
+          - 22
+          - 80
+          - 443
+        BlockICMP: false # Block icmp input ( Block Ping )
     ControllerConfig:
       ListenIP: 0.0.0.0 # IP address you want to listen
       SendIP: 0.0.0.0 # IP address you want to send pacakage
