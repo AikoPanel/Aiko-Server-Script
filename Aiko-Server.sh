@@ -362,11 +362,13 @@ generate_config_file() {
         echo -e "${green}1. Shadowsocks${plain}"
         echo -e "${green}2. V2ray${plain}"
         echo -e "${green}3. Trojan${plain}"
+        echo -e "${green}4. Hysteria${plain}"
         read -rp "Please enter the transport protocol (1-4, default 1): " NodeType
         case "$NodeType" in
             1 ) NodeType="Shadowsocks" ;;
             2 ) NodeType="V2ray" ;;
             3 ) NodeType="Trojan" ;;
+            4 ) NoodeType="Hysteria" ;;
             * ) NodeType="V2ray" ;;
         esac
         echo -e "${yellow}Please select the Sniffing is Enable or Disable, Default is Disable :${plain}"
