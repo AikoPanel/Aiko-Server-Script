@@ -80,7 +80,7 @@ before_show_menu() {
 }
 
 install() {
-    bash <(curl -Ls https://raw.githubusercontents.com/AikoPanel/Aiko-Server-script/master/install.sh)
+    bash <(curl -Ls https://raw.githubusercontents.com/Github-Aiko/Aiko-Server-script/master/install.sh)
     if [[ $? == 0 ]]; then
         if [[ $# == 0 ]]; then
             start
@@ -96,7 +96,7 @@ update() {
     else
         version=$2
     fi
-    bash <(curl -Ls https://raw.githubusercontents.com/AikoPanel/Aiko-Server-script/master/install.sh) $version
+    bash <(curl -Ls https://raw.githubusercontents.com/Github-Aiko/Aiko-Server-script/master/install.sh) $version
     if [[ $? == 0 ]]; then
         echo -e "${green}The update is complete, Aiko-Server has been automatically restarted, please use Aiko-Server log to view the running log${plain}"
         exit
@@ -249,7 +249,7 @@ install_bbr() {
 }
 
 update_shell() {
-    wget -O /usr/bin/Aiko-Server -N --no-check-certificate https://raw.githubusercontents.com/AikoPanel/Aiko-Server-script/master/Aiko-Server.sh
+    wget -O /usr/bin/Aiko-Server -N --no-check-certificate https://raw.githubusercontents.com/Github-Aiko/Aiko-Server-script/master/Aiko-Server.sh
     if [[ $? != 0 ]]; then
         echo ""
         echo -e "${red}Failed to download script. Please check if the local machine can connect to Github${plain}"
@@ -528,7 +528,7 @@ show_usage() {
 show_menu() {
     echo -e "
   ${green}Aiko-Server Backend Management Script, ${plain}${red}not for docker${plain}
---- https://github.com/AikoPanel/Aiko-Server ---
+--- https://github.com/Github-Aiko/Aiko-Server ---
   ${green}0.${plain} Modify configuration
 ————————————————
   ${green}1.${plain} Install Aiko-Server
