@@ -337,7 +337,7 @@ show_enable_status() {
 
 show_Aiko-Server_version() {
    echo -n "Aiko-Server version:"
-    /usr/local/Aiko-Server/Aiko-Server -version
+    /usr/local/Aiko-Server/Aiko-Server version
     echo ""
     if [[ $# == 0 ]]; then
         before_show_menu
@@ -488,6 +488,15 @@ EOF
     fi
 }
 
+generate_x25519(){
+    echo "Aiko-Server will automatically attempt to restart after generating the key pair"
+    /usr/local/Aiko-Server/Aiko-Server x25519
+    echo ""
+    if [[ $# == 0 ]]; then
+        before_show_menu
+    fi
+}
+
 # Open firewall ports
 open_ports() {
     systemctl stop firewalld.service 2>/dev/null
@@ -517,6 +526,7 @@ show_usage() {
     echo "Aiko-Server disable      - Disable Aiko-Server from starting on boot"
     echo "Aiko-Server log          - View Aiko-Server logs"
     echo "Aiko-Server generate     - Generate Aiko-Server configuration file"
+    echo "Aiko-Server x25519       - Generate x25519 key pair"
     echo "Aiko-Server update       - Update Aiko-Server"
     echo "Aiko-Server update x.x.x - Install specific version of Aiko-Server"
     echo "Aiko-Server install      - Install Aiko-Server"
@@ -549,9 +559,10 @@ show_menu() {
  ${green}13.${plain} Upgrade Aiko-Server maintenance script
  ${green}14.${plain} Generate Aiko-Server configuration file
  ${green}15.${plain} Open all network ports on VPS
+ ${green}16.${plain} Generate x25519 key pair
  "
     show_status
-    echo && read -rp "Please enter options [0-14]: " num
+    echo && read -rp "Please enter options [0-16]: " num
 
     case "${num}" in
         0) config ;;
@@ -569,8 +580,9 @@ show_menu() {
         12) check_install && show_Aiko-Server_version ;;
         13) update_shell ;;
         14) generate_config_file ;;
-        15) open_ports ;;
-        *) echo -e "${red}Please enter the correct number [0-14]${plain}" ;;
+        15) generate_x25519 ;;
+        16) open_ports ;;
+        *) echo -e "${red}Please enter the correct number [0-16]${plain}" ;;
     esac
 }
 
@@ -587,6 +599,7 @@ if [[ $# > 0 ]]; then
         "update") check_install 0 && update 0 $2 ;;
         "config") config $* ;;
         "generate") generate_config_file ;;
+        "x25519") generate_x25519 ;;
         "install") check_uninstall 0 && install 0 ;;
         "uninstall") check_install 0 && uninstall 0 ;;
         "version") check_install 0 && show_Aiko-Server_version 0 ;;
