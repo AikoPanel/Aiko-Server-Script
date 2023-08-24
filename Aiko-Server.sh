@@ -580,8 +580,8 @@ show_menu() {
         12) check_install && show_Aiko-Server_version ;;
         13) update_shell ;;
         14) generate_config_file ;;
-        15) generate_x25519 ;;
-        16) open_ports ;;
+        15) open_ports ;;
+        16) generate_x25519 ;;
         *) echo -e "${red}Please enter the correct number [0-16]${plain}" ;;
     esac
 }
