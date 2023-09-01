@@ -169,8 +169,8 @@ install_Aiko-Server() {
     if [[ ! -f /etc/Aiko-Server/custom_inbound.json ]]; then
         cp custom_inbound.json /etc/Aiko-Server/
     fi
-    if [[ ! -f /etc/Aiko-Server/rulelist ]]; then
-        cp rulelist /etc/Aiko-Server/
+    if [[ ! -f /etc/Aiko-Server/AikoBlock ]]; then
+        cp AikoBlock /etc/Aiko-Server/
     fi
     curl -o /usr/bin/Aiko-Server -Ls https://raw.githubusercontent.com/AikoPanel/Aiko-Server-script/master/Aiko-Server.sh
     chmod +x /usr/bin/Aiko-Server
