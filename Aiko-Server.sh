@@ -509,7 +509,12 @@ generate_certificate(){
     fi
 
     if [ -z "$expire" ]; then
-        expire="1800"
+        expire="1800h"
+    else
+        # Check if the user input contains only digits, then add 'h'
+        if [[ $expire =~ ^[0-9]+$ ]]; then
+            expire="${expire}h"
+        fi
     fi
     
     # Call the Go binary with input values
@@ -522,6 +527,7 @@ generate_certificate(){
     read -p "Press any key to return to the menu..."
     show_menu
 }
+
 
 # Open firewall ports
 open_ports() {
