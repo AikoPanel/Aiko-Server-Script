@@ -521,8 +521,8 @@ generate_certificate(){
     /usr/local/Aiko-Server/Aiko-Server certificate --domain "$domain" --expire "$expire"
     sed -i "s|CertMode:.*|CertMode: file|" $CONFIG_FILE
     sed -i "s|CertDomain:.*|CertDomain: ${domain}|" $CONFIG_FILE
-    sed -i "s|CertPath:.*|CertPath: /etc/Aiko-Server/cert/aiko_server.cert|" $CONFIG_FILE
-    sed -i "s|KeyPath:.*|KeyPath: /etc/Aiko-Server/cert/aiko_server.key|" $CONFIG_FILE
+    sed -i "s|CertFile:.*|CertFile: /etc/Aiko-Server/cert/aiko_server.cert|" $CONFIG_FILE
+    sed -i "s|KeyFile:.*|KeyFile: /etc/Aiko-Server/cert/aiko_server.key|" $CONFIG_FILE
     echo -e "${green}Successful configs !${plain}"
     read -p "Press any key to return to the menu..."
     show_menu
