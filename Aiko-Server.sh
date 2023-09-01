@@ -497,7 +497,7 @@ generate_x25519(){
     fi
 }
 
-generate_certificate(
+generate_certificate(){
     CONFIG_FILE="/etc/Aiko-Server/aiko.yml"
     echo "Aiko-Server will automatically attempt to restart after generating the certificate"
     read -p "Please enter the domain of Cert (default: aikopanel.com): " domain
@@ -521,7 +521,7 @@ generate_certificate(
     echo -e "${green}Successful configs !${plain}"
     read -p "Press any key to return to the menu..."
     show_menu
-)
+}
 
 # Open firewall ports
 open_ports() {
