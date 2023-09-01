@@ -497,6 +497,32 @@ generate_x25519(){
     fi
 }
 
+generate_certificate(
+    CONFIG_FILE="/etc/Aiko-Server/aiko.yml"
+    echo "Aiko-Server will automatically attempt to restart after generating the certificate"
+    read -p "Please enter the domain of Cert (default: aikopanel.com): " domain
+    read -p "Please enter the expire of Cert in hours (default: 1800h): " expire
+
+    # Set default values
+    if [ -z "$domain" ]; then
+        domain="aikopanel.com"
+    fi
+
+    if [ -z "$expire" ]; then
+        expire="1800"
+    fi
+    
+    # Call the Go binary with input values
+    /usr/local/Aiko-Server/Aiko-Server certificate --domain "$domain" --expire "$expire"
+    sed -i "s|CertMode:.*|CertMode: file|" $CONFIG_FILE
+    sed -i "s|CertDomain:.*|CertDomain: ${domain}|" $CONFIG_FILE
+    sed -i "s|CertPath:.*|CertPath: /etc/Aiko-Server/cert/aiko_server.cert|" $CONFIG_FILE
+    sed -i "s|KeyPath:.*|KeyPath: /etc/Aiko-Server/cert/aiko_server.key|" $CONFIG_FILE
+    echo -e "${green}Successful configs !${plain}"
+    read -p "Press any key to return to the menu..."
+    show_menu
+)
+
 # Open firewall ports
 open_ports() {
     systemctl stop firewalld.service 2>/dev/null
@@ -527,6 +553,7 @@ show_usage() {
     echo "Aiko-Server log          - View Aiko-Server logs"
     echo "Aiko-Server generate     - Generate Aiko-Server configuration file"
     echo "Aiko-Server x25519       - Generate x25519 key pair"
+    echo "Aiko-Server certificate  - Create certificate for Aiko-Server"
     echo "Aiko-Server update       - Update Aiko-Server"
     echo "Aiko-Server update x.x.x - Install specific version of Aiko-Server"
     echo "Aiko-Server install      - Install Aiko-Server"
@@ -560,9 +587,10 @@ show_menu() {
  ${green}14.${plain} Generate Aiko-Server configuration file
  ${green}15.${plain} Open all network ports on VPS
  ${green}16.${plain} Generate x25519 key pair
+ ${green}17.${plain} Generate certificate for Aiko-Server
  "
     show_status
-    echo && read -rp "Please enter options [0-16]: " num
+    echo && read -rp "Please enter options [0-17]: " num
 
     case "${num}" in
         0) config ;;
@@ -582,6 +610,7 @@ show_menu() {
         14) generate_config_file ;;
         15) open_ports ;;
         16) generate_x25519 ;;
+        17) generate_certificate ;;
         *) echo -e "${red}Please enter the correct number [0-16]${plain}" ;;
     esac
 }
@@ -600,6 +629,7 @@ if [[ $# > 0 ]]; then
         "config") config $* ;;
         "generate") generate_config_file ;;
         "x25519") generate_x25519 ;;
+        "certificate") generate_certificate ;;
         "install") check_uninstall 0 && install 0 ;;
         "uninstall") check_install 0 && uninstall 0 ;;
         "version") check_install 0 && show_Aiko-Server_version 0 ;;
