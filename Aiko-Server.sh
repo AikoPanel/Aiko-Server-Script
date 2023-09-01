@@ -501,7 +501,7 @@ generate_certificate(){
     CONFIG_FILE="/etc/Aiko-Server/aiko.yml"
     echo "Aiko-Server will automatically attempt to restart after generating the certificate"
     read -p "Please enter the domain of Cert (default: aikopanel.com): " domain
-    read -p "Please enter the expire of Cert in hours (default: 1800h): " expire
+    read -p "Please enter the expire of Cert in days (default: 90 days): " expire
 
     # Set default values
     if [ -z "$domain" ]; then
@@ -509,12 +509,7 @@ generate_certificate(){
     fi
 
     if [ -z "$expire" ]; then
-        expire="1800h"
-    else
-        # Check if the user input contains only digits, then add 'h'
-        if [[ $expire =~ ^[0-9]+$ ]]; then
-            expire="${expire}h"
-        fi
+        expire="90"
     fi
     
     # Call the Go binary with input values
