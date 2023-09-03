@@ -2,6 +2,8 @@ version: '3'
 services: 
   aiko-server: 
     image: aikocute/aikocutehotme:latest
+    environment:
+      - FORMAT=yml
     volumes:
       - ./config:/etc/Aiko-Server/
     restart: always
