@@ -110,7 +110,7 @@ update() {
 config() {
     echo "Aiko-Server will automatically attempt to restart after modifying the configuration"
     nano /etc/Aiko-Server/aiko.yml
-    sleep 2
+    sleep 1
     check_status
     case $? in
         0)
@@ -355,6 +355,36 @@ generate_config_file() {
     echo -e "${red}4. TLS is not currently supported${plain}"
     read -rp "Do you want to continue generating the configuration file? (y/n)" generate_config_file_continue
     if [[ $generate_config_file_continue =~ "y"|"Y" ]]; then
+        echo -e "${yellow}Please select the configuration file format:${plain}"
+        echo -e "${green}1. yml${plain}"
+        echo -e "${green}2. yaml${plain}"
+        echo -e "${green}3. json${plain}"
+        read -rp "Please enter the configuration file format (1-3, default 1): " ConfigPathType
+        case "$ConfigPathType" in
+            1 ) ConfigPath="yml" ;;
+            2 ) ConfigPath="yaml" ;;
+            3 ) ConfigPath="json" ;;
+            * ) ConfigPath="yml" ;;
+        esac
+        echo -e "${yellow}Please select the PanelType of your server:${plain}"
+        echo -e "${green}1. AikoPanel${plain}"
+        echo -e "${green}2. SSpanel${plain}"
+        echo -e "${green}3. V2board${plain}"
+        echo -e "${green}4. PMpanel${plain}"
+        echo -e "${green}5. Proxypanel${plain}"
+        echo -e "${green}6. V2RaySocks${plain}"
+        echo -e "${green}7. ZeroPanel${plain}"
+        read -rp "Please enter the PanelType (1-7, default 1): " PanelType
+        case "$PanelType" in
+            1 ) PanelType="AikoPanel" ;;
+            2 ) PanelType="SSpanel" ;;
+            3 ) PanelType="V2board" ;;
+            4 ) PanelType="PMpanel" ;;
+            5 ) PanelType="Proxypanel" ;;
+            6 ) PanelType="V2RaySocks" ;;
+            7 ) PanelType="ZeroPanel" ;;
+            * ) PanelType="AikoPanel" ;;
+        esac
         read -rp "Please enter the domain name of your server: " ApiHost
         read -rp "Please enter the panel API key: " ApiKey
         read -rp "Please enter the node ID: " NodeID
@@ -362,13 +392,11 @@ generate_config_file() {
         echo -e "${green}1. Shadowsocks${plain}"
         echo -e "${green}2. V2ray${plain}"
         echo -e "${green}3. Trojan${plain}"
-        echo -e "${green}4. Hysteria${plain}"
-        read -rp "Please enter the transport protocol (1-4, default 1): " NodeType
+        read -rp "Please enter the transport protocol (1-3, default 2): " NodeType
         case "$NodeType" in
             1 ) NodeType="Shadowsocks" ;;
             2 ) NodeType="V2ray" ;;
             3 ) NodeType="Trojan" ;;
-            4 ) NoodeType="Hysteria" ;;
             * ) NodeType="V2ray" ;;
         esac
         echo -e "${yellow}Please select the Sniffing is Enable or Disable, Default is Disable :${plain}"
@@ -381,107 +409,182 @@ generate_config_file() {
             * ) Sniffing="true" ;;
         esac
         cd /etc/Aiko-Server
-        mv aiko.yml aiko.yml.bak
-        cat <<EOF > /etc/Aiko-Server/aiko.yml
-CoreConfig:
-  Type: "xray" # Core type. if you need many cores, use " " to split
-  XrayConfig:
-    Log:
-      Level: none # Log level: none, error, warning, info, debug
-      AccessPath: # /etc/Aiko-Server/access.Log
-      ErrorPath: # /etc/Aiko-Server/error.log
-    DnsConfigPath: # /etc/Aiko-Server/dns.json # Path to dns config, check https://xtls.github.io/config/dns.html for help
-    RouteConfigPath: # /etc/Aiko-Server/route.json # Path to route config, check https://xtls.github.io/config/routing.html for help
-    InboundConfigPath: # /etc/Aiko-Server/custom_inbound.json # Path to custom inbound config, check https://xtls.github.io/config/inbound.html for help
-    OutboundConfigPath: # /etc/Aiko-Server/custom_outbound.json # Path to custom outbound config, check https://xtls.github.io/config/outbound.html for help
-    ConnectionConfig:
-      Handshake: 4 # Handshake time limit, Second
-      ConnIdle: 30 # Connection idle time limit, Second
-      UplinkOnly: 2 # Time limit when the connection downstream is closed, Second
-      DownlinkOnly: 4 # Time limit when the connection is closed after the uplink is closed, Second
-      BufferSize: 64 # The internal cache size of each connection, kB
+        # nếu ConfigPath = yml or yaml thì tạo file aiko.yml
+        if [[ $ConfigPath =~ "yml"|"yaml" ]]; then
+        cat <<EOF > /etc/Aiko-Server/aiko.$ConfigPath
+Log:
+  Level: warning # Log level: none, error, warning, info, debug 
+  AccessPath: # /etc/Aiko-Server/access.Log
+  ErrorPath: # /etc/Aiko-Server/error.log
+DnsConfigPath: # /etc/Aiko-Server/dns.json # Path to dns config, check https://xtls.github.io/config/dns.html for help
+RouteConfigPath: # /etc/Aiko-Server/route.json # Path to route config, check https://xtls.github.io/config/routing.html for help
+InboundConfigPath: # /etc/Aiko-Server/custom_inbound.json # Path to custom inbound config, check https://xtls.github.io/config/inbound.html for help
+OutboundConfigPath: # /etc/Aiko-Server/custom_outbound.json # Path to custom outbound config, check https://xtls.github.io/config/outbound.html for help
+ConnectionConfig:
+  Handshake: 4 # Handshake time limit, Second
+  ConnIdle: 30 # Connection idle time limit, Second
+  UplinkOnly: 2 # Time limit when the connection downstream is closed, Second
+  DownlinkOnly: 4 # Time limit when the connection is closed after the uplink is closed, Second
+  BufferSize: 64 # The internal cache size of each connection, kB
 Nodes:
-  - ApiConfig:
-      ApiHost: "$ApiHost"
-      ApiKey: "$ApiKey"
-      NodeID: $NodeID
-      NodeType: V2ray # Node type: V2ray, Shadowsocks, Trojan
+  - PanelType: "$PanelType" # Panel type: AikoPanel, SSpanel, V2board, PMpanel, Proxypanel, V2RaySocks, ZeroPanel
+    ApiConfig:
+      ApiHost: "${ApiHost}"
+      ApiKey: "${ApiKey}"
+      NodeID: ${NodeID}
+      NodeType: ${NodeType} # Node type: V2ray, Shadowsocks, Trojan, Shadowsocks-Plugin
       Timeout: 30 # Timeout for the api request
+      EnableVless: false # Enable Vless for V2ray Type
+      VlessFlow: "xtls-rprx-vision" # Only support vless
+      SpeedLimit: 0 # Mbps, Local settings will replace remote settings, 0 means disable
+      DeviceLimit: 0 # Local settings will replace remote settings, 0 means disable
       RuleListPath: # /etc/Aiko-Server/rulelist Path to local rulelist file
     ControllerConfig:
       ListenIP: 0.0.0.0 # IP address you want to listen
       SendIP: 0.0.0.0 # IP address you want to send pacakage
-      XrayOptions:
-        EnableDNS: false # Use custom DNS config, Please ensure that you set the dns.json well
-        DNSType: AsIs # AsIs, UseIP, UseIPv4, UseIPv6, DNS strategy
-        EnableTFO: false # Enable TCP Fast Open
-        EnableVless: false # Enable Vless for V2ray Type
-        EnableXtls: false  # Enable xtls-rprx-vision, only vless
-        EnableProxyProtocol: false # Only works for WebSocket and TCP
-        EnableFallback: false # Only support for Trojan and Vless
-        DisableSniffing: $Sniffing # Disable sniffing
-        FallBackConfigs: # Support multiple fallbacks
-          - SNI: # TLS SNI(Server Name Indication), Empty for any
-            Alpn: # Alpn, Empty for any
-            Path: # HTTP PATH, Empty for any
-            Dest: 80 # Required, Destination of fallback, check https://xtls.github.io/config/features/fallback.html for details.
-            ProxyProtocolVer: 0 # Send PROXY protocol version, 0 for dsable
-      HyOptions:
-        Resolver: "udp://1.1.1.1:53" # DNS resolver address
-        ResolvePreference: 64 # DNS IPv4/IPv6 preference. Available options: "64" (IPv6 first, fallback to IPv4), "46" (IPv4 first, fallback to IPv6), "6" (IPv6 only), "4" (IPv4 only)
-        SendDevice: "eth0" # Bind device for outbound connections (usually requires root)
-      LimitConfig:
-        EnableRealtime: false # Check device limit on real time
-        SpeedLimit: 0 # Mbps, Local settings will replace remote settings, 0 means disable
-        DeviceLimit: 0 # Local settings will replace remote settings, 0 means disable
-        ConnLimit: 0 # Connecting limit, only working for TCP, 0mean
-        EnableIpRecorder: false # Enable online ip report
-        IpRecorderConfig:
-          Type: "Recorder" # Recorder type: Recorder, Redis
-          RecorderConfig:
-            Url: "http://127.0.0.1:123" # Report url
-            Token: "123" # Report token
-            Timeout: 10 # Report timeout, sec.
-          RedisConfig:
-            Address: "127.0.0.1:6379" # Redis address
-            Password: "" # Redis password
-            DB: 0 # Redis DB
-            Expiry: 60 # redis expiry time, sec.
-          Periodic: 60 # Report interval, sec.
-          EnableIpSync: false # Enable online ip sync
-        EnableDynamicSpeedLimit: false # Enable dynamic speed limit
-        DynamicSpeedLimitConfig:
-          Periodic: 60 # Time to check the user traffic , sec.
-          Traffic: 0 # Traffic limit, MB
-          SpeedLimit: 0 # Speed limit, Mbps
-          ExpireTime: 0 # Time limit, sec.
+      UpdatePeriodic: 60 # Time to update the nodeinfo, how many sec.
+      EnableDNS: false # Use custom DNS config, Please ensure that you set the dns.json well
+      DNSType: AsIs # AsIs, UseIP, UseIPv4, UseIPv6, DNS strategy
+      EnableProxyProtocol: false # Only works for WebSocket and TCP
+      DisableSniffing: ${Sniffing} # Disable sniffing
+      DynamicSpeedConfig:
+        Limit: 0 # Warned speed. Set to 0 to disable AutoSpeedLimit (mbps)
+        WarnTimes: 0 # After (WarnTimes) consecutive warnings, the user will be limited. Set to 0 to punish overspeed user immediately.
+        LimitSpeed: 0 # The speedlimit of a limited user (unit: mbps)
+        LimitDuration: 0 # How many minutes will the limiting last (unit: minute)
+      RedisConfig:
+        Enable: false # Enable the Redis limit of a user
+        RedisAddr: 127.0.0.1:6379 # The redis server address format: (IP:Port)
+        RedisPassword: PASSWORD # Redis password
+        RedisDB: 0 # Redis DB (Redis database number, default 0, no need to change)
+        Timeout: 5 # Timeout for Redis request
+        Expiry: 60 # Expiry time ( Cache time of online IP, unit: second )
+      EnableFallback: false # Only support for Trojan and Vless
+      FallBackConfigs:  # Support multiple fallbacks
+        - SNI: # TLS SNI(Server Name Indication), Empty for any
+          Alpn: # Alpn, Empty for any
+          Path: # HTTP PATH, Empty for any
+          Dest: 80 # Required, Destination of fallback, check https://xtls.github.io/config/features/fallback.html for details.
+          ProxyProtocolVer: 0 # Send PROXY protocol version, 0 for disable
+      EnableREALITY: true # Enable REALITY
+      REALITYConfigs:
+        Show: true # Show REALITY debug
+        Dest: www.smzdm.com:443 # Required, Same as fallback
+        ProxyProtocolVer: 0 # Send PROXY protocol version, 0 for disable
+        ServerNames: # Required, list of available serverNames for the client, * wildcard is not supported at the moment.
+          - www.smzdm.com
+        PrivateKey: YOUR_PRIVATE_KEY # Required, execute './aiko-server x25519' to generate.
+        MinClientVer: # Optional, minimum version of Xray client, format is x.y.z.
+        MaxClientVer: # Optional, maximum version of Xray client, format is x.y.z.
+        MaxTimeDiff: 0 # Optional, maximum allowed time difference, unit is in milliseconds.
+        ShortIds: # Required, list of available shortIds for the client, can be used to differentiate between different clients.
+          - ""
+          - 0123456789abcdef
       CertConfig:
-        CertMode: dns # Option about how to get certificate: none, file, http, dns, reality. Choose "none" will forcedly disable the tls config.
+        CertMode: dns # Option about how to get certificate: none, file, http, tls, dns. Choose "none" will forcedly disable the tls config.
         CertDomain: "node1.test.com" # Domain to cert
-        CertFile: /etc/Aiko-Server/cert/node1.test.com.cert # Provided if the CertMode is file
-        KeyFile: /etc/Aiko-Server/cert/node1.test.com.key
+        CertFile: /etc/Aiko-Server/cert/aiko_server.cert # Provided if the CertMode is file
+        KeyFile: /etc/Aiko-Server/cert/aiko_server.key
         Provider: alidns # DNS cert provider, Get the full support list here: https://go-acme.github.io/lego/dns/
         Email: test@me.com
         DNSEnv: # DNS ENV option used by DNS provider
-          ALICLOUD_ACCESS_KEY: aaa
-          ALICLOUD_SECRET_KEY: bbb
-        RealityConfig: # This config like RealityObject for xray-core, please check https://xtls.github.io/config/transport.html#realityobject
-          Dest: 80 # Same fallback dest
-          Xver: 0 # Same fallback xver
-          ServerNames:
-            - "example.com"
-            - "www.example.com"
-          PrivateKey: "" # Private key for server
-          MinClientVer: "" # Min client version
-          MaxClientVer: "" # Max client version
-          MaxTimeDiff: 0 # Max time difference, ms
-          ShortIds: # Short ids
-            - ""
-            - "0123456789abcdef"
+          CLOUDFLARE_EMAIL: aaa
+          CLOUDFLARE_API_KEY: bbb
 EOF
         echo -e "${green}Aiko-Server configuration file generated successfully, and Aiko-Server service is being restarted${plain}"
         restart 0
         before_show_menu
+        else
+        # nếu ConfigPath = json thì tạo file aiko.json
+        cat <<EOF > /etc/Aiko-Server/aiko.$ConfigPath
+{
+    "Log": {
+      "Level": "warning",
+      "AccessPath": "/etc/Aiko-Server/access.Log",
+      "ErrorPath": "/etc/Aiko-Server/error.log"
+    },
+    "DnsConfigPath": "/etc/Aiko-Server/dns.json",
+    "RouteConfigPath": "/etc/Aiko-Server/route.json",
+    "InboundConfigPath": "/etc/Aiko-Server/custom_inbound.json",
+    "OutboundConfigPath": "/etc/Aiko-Server/custom_outbound.json",
+    "ConnectionConfig": {
+      "Handshake": 4,
+      "ConnIdle": 30,
+      "UplinkOnly": 2,
+      "DownlinkOnly": 4,
+      "BufferSize": 64
+    },
+    "Nodes": [
+      {
+        "PanelType": "$PanelType",
+        "ApiConfig": {
+          "ApiHost": "${ApiHost}",
+          "ApiKey": "${ApiKey}",
+          "NodeID": ${NodeID},
+          "NodeType": "${NodeType}",
+          "Timeout": 30,
+          "EnableVless": false,
+          "VlessFlow": "xtls-rprx-vision",
+          "SpeedLimit": 0,
+          "DeviceLimit": 0,
+          "RuleListPath": ""
+        },
+        "ControllerConfig": {
+          "ListenIP": "0.0.0.0",
+          "SendIP": "0.0.0.0",
+          "UpdatePeriodic": 60,
+          "EnableDNS": false,
+          "DNSType": "AsIs",
+          "EnableProxyProtocol": false,
+          "DisableSniffing": ${Sniffing},
+          "DynamicSpeedConfig": {
+            "Limit": 0,
+            "WarnTimes": 0,
+            "LimitSpeed": 0,
+            "LimitDuration": 0
+          },
+          "RedisConfig": {
+            "Enable": false,
+            "RedisAddr": "127.0.0.1:6379",
+            "RedisPassword": "PASSWORD",
+            "RedisDB": 0,
+            "Timeout": 5,
+            "Expiry": 60
+          },
+          "EnableFallback": false,
+          "FallBackConfigs": [],
+          "EnableREALITY": true,
+          "REALITYConfigs": {
+            "Show": true,
+            "Dest": "www.smzdm.com:443",
+            "ProxyProtocolVer": 0,
+            "ServerNames": ["www.smzdm.com"],
+            "PrivateKey": "YOUR_PRIVATE_KEY",
+            "MinClientVer": "",
+            "MaxClientVer": "",
+            "MaxTimeDiff": 0,
+            "ShortIds": ["", "0123456789abcdef"]
+          },
+          "CertConfig": {
+            "CertMode": "dns",
+            "CertDomain": "node1.test.com",
+            "CertFile": "/etc/Aiko-Server/cert/aiko_server.cert",
+            "KeyFile": "/etc/Aiko-Server/cert/aiko_server.key",
+            "Provider": "alidns",
+            "Email": "test@me.com",
+            "DNSEnv": {
+              "CLOUDFLARE_EMAIL": "aaa",
+              "CLOUDFLARE_API_KEY": "bbb"
+            }
+          }
+        }
+      }
+    ]
+  }
+EOF
+    sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${config_path}|" /etc/systemd/system/aiko-server.service
+    systemctl daemon-reload
+    systemctl restart aiko-server
     else
         echo -e "${red}Aiko-Server configuration file generation cancelled${plain}"
         before_show_menu
@@ -491,6 +594,29 @@ EOF
 generate_x25519(){
     echo "Aiko-Server will automatically attempt to restart after generating the key pair"
     /usr/local/Aiko-Server/Aiko-Server x25519
+    echo ""
+    if [[ $# == 0 ]]; then
+        before_show_menu
+    fi
+}
+
+generate_config_file(){
+    echo "Aiko-Server will automatically attempt to restart after generating the configuration file"
+    echo -e "${yellow}Please select the configuration file format:${plain}"
+    echo -e "${green}1. yml${plain}"
+    echo -e "${green}2. yaml${plain}"
+    echo -e "${green}3. json${plain}"
+    read -rp "Please enter the configuration file format (1-3, default 1): " ConfigPathType
+    case "$ConfigPathType" in
+        1 ) ConfigPathType="yml" ;;
+        2 ) ConfigPathType="yaml" ;;
+        3 ) ConfigPathType="json" ;;
+        * ) ConfigPathType="yml" ;;
+    esac
+    /usr/local/Aiko-Server/Aiko-Server createconfig ${ConfigPathType}
+    sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${ConfigPathType}|" /etc/systemd/system/aiko-server.service
+    systemctl daemon-reload
+    systemctl restart aiko-server
     echo ""
     if [[ $# == 0 ]]; then
         before_show_menu
