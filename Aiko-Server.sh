@@ -344,8 +344,6 @@ show_Aiko-Server_version() {
     fi
 }
 
-
-
 generate_config_file() {
     echo -e "${yellow}Aiko-Server Configuration File Wizard${plain}"
     echo -e "${red}Please read the following notes:${plain}"
@@ -355,17 +353,6 @@ generate_config_file() {
     echo -e "${red}4. TLS is not currently supported${plain}"
     read -rp "Do you want to continue generating the configuration file? (y/n)" generate_config_file_continue
     if [[ $generate_config_file_continue =~ "y"|"Y" ]]; then
-        echo -e "${yellow}Please select the configuration file format:${plain}"
-        echo -e "${green}1. yml${plain}"
-        echo -e "${green}2. yaml${plain}"
-        echo -e "${green}3. json${plain}"
-        read -rp "Please enter the configuration file format (1-3, default 1): " ConfigPathType
-        case "$ConfigPathType" in
-            1 ) ConfigPath="yml" ;;
-            2 ) ConfigPath="yaml" ;;
-            3 ) ConfigPath="json" ;;
-            * ) ConfigPath="yml" ;;
-        esac
         echo -e "${yellow}Please select the PanelType of your server:${plain}"
         echo -e "${green}1. AikoPanel${plain}"
         echo -e "${green}2. SSpanel${plain}"
@@ -409,9 +396,7 @@ generate_config_file() {
             * ) Sniffing="true" ;;
         esac
         cd /etc/Aiko-Server
-        # nếu ConfigPath = yml or yaml thì tạo file aiko.yml
-        if [[ $ConfigPath =~ "yml"|"yaml" ]]; then
-        cat <<EOF > /etc/Aiko-Server/aiko.$ConfigPath
+        cat <<EOF > /etc/Aiko-Server/aiko.yml
 Log:
   Level: warning # Log level: none, error, warning, info, debug 
   AccessPath: # /etc/Aiko-Server/access.Log
@@ -491,108 +476,6 @@ Nodes:
           CLOUDFLARE_EMAIL: aaa
           CLOUDFLARE_API_KEY: bbb
 EOF
-        echo -e "${green}Aiko-Server configuration file generated successfully, and Aiko-Server service is being restarted${plain}"
-        sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${config_path}|" /etc/systemd/system/Aiko-Server.service
-        systemctl daemon-reload
-        systemctl restart aiko-server
-        restart 0
-        before_show_menu
-        elif [[ $ConfigPath =~ "json" ]]; then
-        # nếu ConfigPath = json thì tạo file aiko.json
-        cat <<EOF > /etc/Aiko-Server/aiko.$ConfigPath
-{
-    "Log": {
-      "Level": "warning",
-      "AccessPath": "/etc/Aiko-Server/access.Log",
-      "ErrorPath": "/etc/Aiko-Server/error.log"
-    },
-    "DnsConfigPath": "/etc/Aiko-Server/dns.json",
-    "RouteConfigPath": "/etc/Aiko-Server/route.json",
-    "InboundConfigPath": "/etc/Aiko-Server/custom_inbound.json",
-    "OutboundConfigPath": "/etc/Aiko-Server/custom_outbound.json",
-    "ConnectionConfig": {
-      "Handshake": 4,
-      "ConnIdle": 30,
-      "UplinkOnly": 2,
-      "DownlinkOnly": 4,
-      "BufferSize": 64
-    },
-    "Nodes": [
-      {
-        "PanelType": "$PanelType",
-        "ApiConfig": {
-          "ApiHost": "${ApiHost}",
-          "ApiKey": "${ApiKey}",
-          "NodeID": ${NodeID},
-          "NodeType": "${NodeType}",
-          "Timeout": 30,
-          "EnableVless": false,
-          "VlessFlow": "xtls-rprx-vision",
-          "SpeedLimit": 0,
-          "DeviceLimit": 0,
-          "RuleListPath": ""
-        },
-        "ControllerConfig": {
-          "ListenIP": "0.0.0.0",
-          "SendIP": "0.0.0.0",
-          "UpdatePeriodic": 60,
-          "EnableDNS": false,
-          "DNSType": "AsIs",
-          "EnableProxyProtocol": false,
-          "DisableSniffing": ${Sniffing},
-          "DynamicSpeedConfig": {
-            "Limit": 0,
-            "WarnTimes": 0,
-            "LimitSpeed": 0,
-            "LimitDuration": 0
-          },
-          "RedisConfig": {
-            "Enable": false,
-            "RedisAddr": "127.0.0.1:6379",
-            "RedisPassword": "PASSWORD",
-            "RedisDB": 0,
-            "Timeout": 5,
-            "Expiry": 60
-          },
-          "EnableFallback": false,
-          "FallBackConfigs": [],
-          "EnableREALITY": true,
-          "REALITYConfigs": {
-            "Show": true,
-            "Dest": "www.smzdm.com:443",
-            "ProxyProtocolVer": 0,
-            "ServerNames": ["www.smzdm.com"],
-            "PrivateKey": "YOUR_PRIVATE_KEY",
-            "MinClientVer": "",
-            "MaxClientVer": "",
-            "MaxTimeDiff": 0,
-            "ShortIds": ["", "0123456789abcdef"]
-          },
-          "CertConfig": {
-            "CertMode": "dns",
-            "CertDomain": "node1.test.com",
-            "CertFile": "/etc/Aiko-Server/cert/aiko_server.cert",
-            "KeyFile": "/etc/Aiko-Server/cert/aiko_server.key",
-            "Provider": "alidns",
-            "Email": "test@me.com",
-            "DNSEnv": {
-              "CLOUDFLARE_EMAIL": "aaa",
-              "CLOUDFLARE_API_KEY": "bbb"
-            }
-          }
-        }
-      }
-    ]
-  }
-EOF
-        sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${config_path}|" /etc/systemd/system/Aiko-Server.service
-        systemctl daemon-reload
-        systemctl restart aiko-server
-        restart 0
-        before_show_menu
-        else
-            echo -e "${red}Aiko-Server configuration file generation failed${plain}"
-        fi
     else
         echo -e "${red}Aiko-Server configuration file generation cancelled${plain}"
         before_show_menu
@@ -602,29 +485,6 @@ EOF
 generate_x25519(){
     echo "Aiko-Server will automatically attempt to restart after generating the key pair"
     /usr/local/Aiko-Server/Aiko-Server x25519
-    echo ""
-    if [[ $# == 0 ]]; then
-        before_show_menu
-    fi
-}
-
-generate_config_default(){
-    echo "Aiko-Server will automatically attempt to restart after generating the configuration file"
-    echo -e "${yellow}Please select the configuration file format:${plain}"
-    echo -e "${green}1. yml${plain}"
-    echo -e "${green}2. yaml${plain}"
-    echo -e "${green}3. json${plain}"
-    read -rp "Please enter the configuration file format (1-3, default 1): " ConfigPathType
-    case "$ConfigPathType" in
-        1 ) ConfigPathType="yml" ;;
-        2 ) ConfigPathType="yaml" ;;
-        3 ) ConfigPathType="json" ;;
-        * ) ConfigPathType="yml" ;;
-    esac
-    /usr/local/Aiko-Server/Aiko-Server createconfig ${ConfigPathType}
-    sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${ConfigPathType}|" /etc/systemd/system/Aiko-Server.service
-    systemctl daemon-reload
-    systemctl restart aiko-server
     echo ""
     if [[ $# == 0 ]]; then
         before_show_menu
@@ -655,6 +515,25 @@ generate_certificate(){
     echo -e "${green}Successful configs !${plain}"
     read -p "Press any key to return to the menu..."
     show_menu
+}
+
+generate_config_default(){
+    echo -e "${yellow}Aiko-Server Default Configuration File Wizard${plain}"
+    # check /etc/Aiko-Server/aiko.yml
+    if [[ -f /etc/Aiko-Server/aiko.yml ]]; then
+        echo -e "${red}The configuration file already exists, please delete it first${plain}"
+        read -p "${green} Do you want to delete it now? (y/n) ${plain}" delete_config
+        if [[ $delete_config =~ "y"|"Y" ]]; then
+            rm -rf /etc/Aiko-Server/aiko.yml
+            echo -e "${green}The configuration file has been deleted${plain}"
+            /usr/local/Aiko-Server/Aiko-Server config
+            echo -e "${green}The default configuration file has been generated${plain}"
+        else
+            echo -e "${red}Please delete the configuration file first${plain}"
+            before_show_menu
+        fi 
+        before_show_menu
+    fi
 }
 
 
