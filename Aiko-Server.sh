@@ -492,6 +492,9 @@ Nodes:
           CLOUDFLARE_API_KEY: bbb
 EOF
         echo -e "${green}Aiko-Server configuration file generated successfully, and Aiko-Server service is being restarted${plain}"
+        sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${config_path}|" /etc/systemd/system/aiko-server.service
+        systemctl daemon-reload
+        systemctl restart aiko-server
         restart 0
         before_show_menu
         elif [[ $ConfigPath =~ "json" ]]; then
@@ -585,10 +588,15 @@ EOF
         sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${config_path}|" /etc/systemd/system/aiko-server.service
         systemctl daemon-reload
         systemctl restart aiko-server
+        restart 0
+        before_show_menu
         else
-            echo -e "${red}Aiko-Server configuration file generation cancelled${plain}"
-            before_show_menu
+            echo -e "${red}Aiko-Server configuration file generation failed${plain}"
         fi
+    else
+        echo -e "${red}Aiko-Server configuration file generation cancelled${plain}"
+        before_show_menu
+    fi
 }
 
 generate_x25519(){
