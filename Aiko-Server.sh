@@ -338,7 +338,6 @@ show_enable_status() {
 show_Aiko-Server_version() {
    echo -n "Aiko-Server version:"
     /usr/local/Aiko-Server/Aiko-Server version
-    echo ""
     if [[ $# == 0 ]]; then
         before_show_menu
     fi
@@ -485,7 +484,6 @@ EOF
 generate_x25519(){
     echo "Aiko-Server will automatically attempt to restart after generating the key pair"
     /usr/local/Aiko-Server/Aiko-Server x25519
-    echo ""
     if [[ $# == 0 ]]; then
         before_show_menu
     fi
