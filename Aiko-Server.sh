@@ -450,7 +450,7 @@ Nodes:
           Path: # HTTP PATH, Empty for any
           Dest: 80 # Required, Destination of fallback, check https://xtls.github.io/config/features/fallback.html for details.
           ProxyProtocolVer: 0 # Send PROXY protocol version, 0 for disable
-      EnableREALITY: true # Enable REALITY
+      EnableREALITY: false # Enable REALITY
       REALITYConfigs:
         Show: true # Show REALITY debug
         Dest: www.smzdm.com:443 # Required, Same as fallback
