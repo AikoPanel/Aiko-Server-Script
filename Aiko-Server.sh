@@ -600,7 +600,7 @@ generate_x25519(){
     fi
 }
 
-generate_config_file(){
+generate_config_default(){
     echo "Aiko-Server will automatically attempt to restart after generating the configuration file"
     echo -e "${yellow}Please select the configuration file format:${plain}"
     echo -e "${green}1. yml${plain}"
@@ -670,22 +670,23 @@ open_ports() {
 show_usage() {
     echo "Aiko-Server Management Script Usage: "
     echo "------------------------------------------"
-    echo "Aiko-Server              - Show management menu (with more functions)"
-    echo "Aiko-Server start        - Start Aiko-Server"
-    echo "Aiko-Server stop         - Stop Aiko-Server"
-    echo "Aiko-Server restart      - Restart Aiko-Server"
-    echo "Aiko-Server status       - Check Aiko-Server status"
-    echo "Aiko-Server enable       - Set Aiko-Server to start on boot"
-    echo "Aiko-Server disable      - Disable Aiko-Server from starting on boot"
-    echo "Aiko-Server log          - View Aiko-Server logs"
-    echo "Aiko-Server generate     - Generate Aiko-Server configuration file"
-    echo "Aiko-Server x25519       - Generate x25519 key pair"
-    echo "Aiko-Server certificate  - Create certificate for Aiko-Server"
-    echo "Aiko-Server update       - Update Aiko-Server"
-    echo "Aiko-Server update x.x.x - Install specific version of Aiko-Server"
-    echo "Aiko-Server install      - Install Aiko-Server"
-    echo "Aiko-Server uninstall    - Uninstall Aiko-Server"
-    echo "Aiko-Server version      - Show Aiko-Server version"
+    echo "Aiko-Server               - Show management menu (with more functions)"
+    echo "Aiko-Server start         - Start Aiko-Server"
+    echo "Aiko-Server stop          - Stop Aiko-Server"
+    echo "Aiko-Server restart       - Restart Aiko-Server"
+    echo "Aiko-Server status        - Check Aiko-Server status"
+    echo "Aiko-Server enable        - Set Aiko-Server to start on boot"
+    echo "Aiko-Server disable       - Disable Aiko-Server from starting on boot"
+    echo "Aiko-Server log           - View Aiko-Server logs"
+    echo "Aiko-Server generate      - Generate Aiko-Server configuration file"
+    echo "Aiko-Server defaultconfig - Modify Aiko-Server configuration file"
+    echo "Aiko-Server x25519        - Generate x25519 key pair"
+    echo "Aiko-Server certificate   - Create certificate for Aiko-Server"
+    echo "Aiko-Server update        - Update Aiko-Server"
+    echo "Aiko-Server update x.x.x  - Install specific version of Aiko-Server"
+    echo "Aiko-Server install       - Install Aiko-Server"
+    echo "Aiko-Server uninstall     - Uninstall Aiko-Server"
+    echo "Aiko-Server version       - Show Aiko-Server version"
     echo "------------------------------------------"
 }
 
@@ -715,6 +716,7 @@ show_menu() {
  ${green}15.${plain} Open all network ports on VPS
  ${green}16.${plain} Generate x25519 key pair
  ${green}17.${plain} Generate certificate for Aiko-Server
+ ${green}18.${plain} Generate Aiko-Server default configuration file
  "
     show_status
     echo && read -rp "Please enter options [0-17]: " num
@@ -738,6 +740,7 @@ show_menu() {
         15) open_ports ;;
         16) generate_x25519 ;;
         17) generate_certificate ;;
+        18) generate_config_default ;;
         *) echo -e "${red}Please enter the correct number [0-16]${plain}" ;;
     esac
 }
@@ -755,6 +758,7 @@ if [[ $# > 0 ]]; then
         "update") check_install 0 && update 0 $2 ;;
         "config") config $* ;;
         "generate") generate_config_file ;;
+        "defaultconfig") generate_config_default ;;
         "x25519") generate_x25519 ;;
         "certificate") generate_certificate ;;
         "install") check_uninstall 0 && install 0 ;;
