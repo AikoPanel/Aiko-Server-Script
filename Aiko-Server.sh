@@ -336,7 +336,7 @@ show_enable_status() {
 }
 
 show_Aiko-Server_version() {
-   echo -n "Aiko-Server version:"
+   echo -n "Aiko-Server version: "
     /usr/local/Aiko-Server/Aiko-Server version
     if [[ $# == 0 ]]; then
         before_show_menu
