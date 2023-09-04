@@ -494,7 +494,7 @@ EOF
         echo -e "${green}Aiko-Server configuration file generated successfully, and Aiko-Server service is being restarted${plain}"
         restart 0
         before_show_menu
-        else
+        elif [[ $ConfigPath =~ "json" ]]; then
         # nếu ConfigPath = json thì tạo file aiko.json
         cat <<EOF > /etc/Aiko-Server/aiko.$ConfigPath
 {
@@ -582,13 +582,13 @@ EOF
     ]
   }
 EOF
-    sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${config_path}|" /etc/systemd/system/aiko-server.service
-    systemctl daemon-reload
-    systemctl restart aiko-server
-    else
-        echo -e "${red}Aiko-Server configuration file generation cancelled${plain}"
-        before_show_menu
-    fi
+        sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${config_path}|" /etc/systemd/system/aiko-server.service
+        systemctl daemon-reload
+        systemctl restart aiko-server
+        else
+            echo -e "${red}Aiko-Server configuration file generation cancelled${plain}"
+            before_show_menu
+        fi
 }
 
 generate_x25519(){
