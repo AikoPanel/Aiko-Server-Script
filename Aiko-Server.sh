@@ -534,6 +534,14 @@ generate_config_default(){
     fi
 }
 
+generate_multinode(){
+    echo -e "${yellow}Aiko-Server MultiNode Wizard${plain}"
+    read -p "Please enter the Source port: " source_port
+    read -p "Please enter the Destination port: " destination_port
+    /usr/local/Aiko-Server/Aiko-Server multinode --source ${source_port} --destination ${destination_port}
+    echo -e "${green}The MultiNode has been generated with Source Port: ${source_port} - Destination Port: ${destination_port}${plain}"
+    before_show_menu
+}
 
 # Open firewall ports
 open_ports() {
@@ -567,6 +575,7 @@ show_usage() {
     echo "Aiko-Server defaultconfig - Modify Aiko-Server configuration file"
     echo "Aiko-Server x25519        - Generate x25519 key pair"
     echo "Aiko-Server certificate   - Create certificate for Aiko-Server"
+    echo "Aiko-Server MultiNode     - Create MultiNode for Aiko-Server with 1 port"
     echo "Aiko-Server update        - Update Aiko-Server"
     echo "Aiko-Server update x.x.x  - Install specific version of Aiko-Server"
     echo "Aiko-Server install       - Install Aiko-Server"
@@ -602,6 +611,7 @@ show_menu() {
  ${green}16.${plain} Generate x25519 key pair
  ${green}17.${plain} Generate certificate for Aiko-Server
  ${green}18.${plain} Generate Aiko-Server default configuration file
+ ${green}19.${plain} Create MultiNode for Aiko-Server with 1 port
  "
     show_status
     echo && read -rp "Please enter options [0-17]: " num
@@ -626,6 +636,7 @@ show_menu() {
         16) generate_x25519 ;;
         17) generate_certificate ;;
         18) generate_config_default ;;
+        19) generate_multinode ;;
         *) echo -e "${red}Please enter the correct number [0-16]${plain}" ;;
     esac
 }
@@ -643,6 +654,7 @@ if [[ $# > 0 ]]; then
         "update") check_install 0 && update 0 $2 ;;
         "config") config $* ;;
         "generate") generate_config_file ;;
+        "multinode") generate_multinode ;;
         "defaultconfig") generate_config_default ;;
         "x25519") generate_x25519 ;;
         "certificate") generate_certificate ;;
