@@ -492,7 +492,7 @@ Nodes:
           CLOUDFLARE_API_KEY: bbb
 EOF
         echo -e "${green}Aiko-Server configuration file generated successfully, and Aiko-Server service is being restarted${plain}"
-        sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${config_path}|" /etc/systemd/system/aiko-server.service
+        sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${config_path}|" /etc/systemd/system/Aiko-Server.service
         systemctl daemon-reload
         systemctl restart aiko-server
         restart 0
@@ -585,7 +585,7 @@ EOF
     ]
   }
 EOF
-        sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${config_path}|" /etc/systemd/system/aiko-server.service
+        sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${config_path}|" /etc/systemd/system/Aiko-Server.service
         systemctl daemon-reload
         systemctl restart aiko-server
         restart 0
@@ -622,7 +622,7 @@ generate_config_default(){
         * ) ConfigPathType="yml" ;;
     esac
     /usr/local/Aiko-Server/Aiko-Server createconfig ${ConfigPathType}
-    sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${ConfigPathType}|" /etc/systemd/system/aiko-server.service
+    sed -i "s|^ExecStart=.*|ExecStart=/usr/local/Aiko-Server/Aiko-Server server -f ${ConfigPathType}|" /etc/systemd/system/Aiko-Server.service
     systemctl daemon-reload
     systemctl restart aiko-server
     echo ""
