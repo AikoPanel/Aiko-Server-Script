@@ -505,7 +505,7 @@ generate_certificate(){
     fi
     
     # Call the Go binary with input values
-    /usr/local/Aiko-Server/Aiko-Server certificate --domain "$domain" --expire "$expire"
+    /usr/local/Aiko-Server/Aiko-Server cert --domain "$domain" --expire "$expire"
     sed -i "s|CertMode:.*|CertMode: file|" $CONFIG_FILE
     sed -i "s|CertDomain:.*|CertDomain: ${domain}|" $CONFIG_FILE
     sed -i "s|CertFile:.*|CertFile: /etc/Aiko-Server/cert/aiko_server.cert|" $CONFIG_FILE
@@ -574,7 +574,7 @@ show_usage() {
     echo "Aiko-Server generate      - Generate Aiko-Server configuration file"
     echo "Aiko-Server defaultconfig - Modify Aiko-Server configuration file"
     echo "Aiko-Server x25519        - Generate x25519 key pair"
-    echo "Aiko-Server certificate   - Create certificate for Aiko-Server"
+    echo "Aiko-Server cert          - Create certificate for Aiko-Server"
     echo "Aiko-Server MultiNode     - Create MultiNode for Aiko-Server with 1 port"
     echo "Aiko-Server update        - Update Aiko-Server"
     echo "Aiko-Server update x.x.x  - Install specific version of Aiko-Server"
