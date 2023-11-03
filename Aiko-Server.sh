@@ -481,68 +481,6 @@ EOF
     fi
 }
 
-generate_x25519(){
-    echo "Aiko-Server will automatically attempt to restart after generating the key pair"
-    /usr/local/Aiko-Server/Aiko-Server x25519
-    if [[ $# == 0 ]]; then
-        before_show_menu
-    fi
-}
-
-generate_certificate(){
-    CONFIG_FILE="/etc/Aiko-Server/aiko.yml"
-    echo "Aiko-Server will automatically attempt to restart after generating the certificate"
-    read -p "Please enter the domain of Cert (default: aikopanel.com): " domain
-    read -p "Please enter the expire of Cert in days (default: 90 days): " expire
-
-    # Set default values
-    if [ -z "$domain" ]; then
-        domain="aikopanel.com"
-    fi
-
-    if [ -z "$expire" ]; then
-        expire="90"
-    fi
-    
-    # Call the Go binary with input values
-    /usr/local/Aiko-Server/Aiko-Server cert --domain "$domain" --expire "$expire"
-    sed -i "s|CertMode:.*|CertMode: file|" $CONFIG_FILE
-    sed -i "s|CertDomain:.*|CertDomain: ${domain}|" $CONFIG_FILE
-    sed -i "s|CertFile:.*|CertFile: /etc/Aiko-Server/cert/aiko_server.cert|" $CONFIG_FILE
-    sed -i "s|KeyFile:.*|KeyFile: /etc/Aiko-Server/cert/aiko_server.key|" $CONFIG_FILE
-    echo -e "${green}Successful configs !${plain}"
-    read -p "Press any key to return to the menu..."
-    show_menu
-}
-
-generate_config_default(){
-    echo -e "${yellow}Aiko-Server Default Configuration File Wizard${plain}"
-    # check /etc/Aiko-Server/aiko.yml
-    if [[ -f /etc/Aiko-Server/aiko.yml ]]; then
-        echo -e "${red}The configuration file already exists, please delete it first${plain}"
-        read -p "${green} Do you want to delete it now? (y/n) ${plain}" delete_config
-        if [[ $delete_config =~ "y"|"Y" ]]; then
-            rm -rf /etc/Aiko-Server/aiko.yml
-            echo -e "${green}The configuration file has been deleted${plain}"
-            /usr/local/Aiko-Server/Aiko-Server config
-            echo -e "${green}The default configuration file has been generated${plain}"
-        else
-            echo -e "${red}Please delete the configuration file first${plain}"
-            before_show_menu
-        fi 
-        before_show_menu
-    fi
-}
-
-generate_multinode(){
-    echo -e "${yellow}Aiko-Server MultiNode Wizard${plain}"
-    read -p "Please enter the Source port: " source_port
-    read -p "Please enter the Destination port: " destination_port
-    /usr/local/Aiko-Server/Aiko-Server multinode --source ${source_port} --destination ${destination_port}
-    echo -e "${green}The MultiNode has been generated with Source Port: ${source_port} - Destination Port: ${destination_port}${plain}"
-    before_show_menu
-}
-
 # Open firewall ports
 open_ports() {
     systemctl stop firewalld.service 2>/dev/null
@@ -608,10 +546,6 @@ show_menu() {
  ${green}13.${plain} Upgrade Aiko-Server maintenance script
  ${green}14.${plain} Generate Aiko-Server configuration file
  ${green}15.${plain} Open all network ports on VPS
- ${green}16.${plain} Generate x25519 key pair
- ${green}17.${plain} Generate certificate for Aiko-Server
- ${green}18.${plain} Generate Aiko-Server default configuration file
- ${green}19.${plain} Create MultiNode for Aiko-Server with 1 port
  "
     show_status
     echo && read -rp "Please enter options [0-17]: " num
@@ -633,10 +567,6 @@ show_menu() {
         13) update_shell ;;
         14) generate_config_file ;;
         15) open_ports ;;
-        16) generate_x25519 ;;
-        17) generate_certificate ;;
-        18) generate_config_default ;;
-        19) generate_multinode ;;
         *) echo -e "${red}Please enter the correct number [0-16]${plain}" ;;
     esac
 }
