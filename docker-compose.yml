@@ -2,12 +2,6 @@ version: '3'
 services: 
   aiko-server: 
     image: aikocute/aikocutehotme:latest
-    environment:
-    # Certificate generation
-      - DOMAIN=example.com # domain for TLS certificate
-      - EXPIRE=90 # days before certificate expires
-    # Config file
-      - CONFIGPATH=/etc/Aiko-Server/aiko.yml
     volumes:
       - ./config:/etc/Aiko-Server/
     restart: always
