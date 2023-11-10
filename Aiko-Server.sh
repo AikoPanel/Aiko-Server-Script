@@ -404,14 +404,8 @@ DnsConfigPath: # /etc/Aiko-Server/dns.json # Path to dns config, check https://x
 RouteConfigPath: # /etc/Aiko-Server/route.json # Path to route config, check https://xtls.github.io/config/routing.html for help
 InboundConfigPath: # /etc/Aiko-Server/custom_inbound.json # Path to custom inbound config, check https://xtls.github.io/config/inbound.html for help
 OutboundConfigPath: # /etc/Aiko-Server/custom_outbound.json # Path to custom outbound config, check https://xtls.github.io/config/outbound.html for help
-ConnectionConfig:
-  Handshake: 4 # Handshake time limit, Second
-  ConnIdle: 30 # Connection idle time limit, Second
-  UplinkOnly: 2 # Time limit when the connection downstream is closed, Second
-  DownlinkOnly: 4 # Time limit when the connection is closed after the uplink is closed, Second
-  BufferSize: 64 # The internal cache size of each connection, kB
 Nodes:
-  - PanelType: "$PanelType" # Panel type: AikoPanel, SSpanel, V2board, PMpanel, Proxypanel, V2RaySocks, ZeroPanel
+  - PanelType: "$PanelType" # Panel type: AikoPanel, AikoPanelv2
     ApiConfig:
       ApiHost: "${ApiHost}"
       ApiKey: "${ApiKey}"
@@ -431,25 +425,12 @@ Nodes:
       DNSType: AsIs # AsIs, UseIP, UseIPv4, UseIPv6, DNS strategy
       EnableProxyProtocol: false # Only works for WebSocket and TCP
       DisableSniffing: ${Sniffing} # Disable sniffing
+      DeviceOnlineMinTraffic: 100 # Ngưỡng thống kê để giới hạn số lượng thiết bị trên bảng AikoPanel. Khi lưu lượng truy cập lớn hơn giới hạn này, số lượng thiết bị trực tuyến sẽ được báo cáo. Đơn vị là kB. Nếu không điền vào, nó sẽ được báo cáo theo mặc định.
       DynamicSpeedConfig:
         Limit: 0 # Warned speed. Set to 0 to disable AutoSpeedLimit (mbps)
         WarnTimes: 0 # After (WarnTimes) consecutive warnings, the user will be limited. Set to 0 to punish overspeed user immediately.
         LimitSpeed: 0 # The speedlimit of a limited user (unit: mbps)
         LimitDuration: 0 # How many minutes will the limiting last (unit: minute)
-      RedisConfig:
-        Enable: false # Enable the Redis limit of a user
-        RedisAddr: 127.0.0.1:6379 # The redis server address format: (IP:Port)
-        RedisPassword: PASSWORD # Redis password
-        RedisDB: 0 # Redis DB (Redis database number, default 0, no need to change)
-        Timeout: 5 # Timeout for Redis request
-        Expiry: 60 # Expiry time ( Cache time of online IP, unit: second )
-      EnableFallback: false # Only support for Trojan and Vless
-      FallBackConfigs:  # Support multiple fallbacks
-        - SNI: # TLS SNI(Server Name Indication), Empty for any
-          Alpn: # Alpn, Empty for any
-          Path: # HTTP PATH, Empty for any
-          Dest: 80 # Required, Destination of fallback, check https://xtls.github.io/config/features/fallback.html for details.
-          ProxyProtocolVer: 0 # Send PROXY protocol version, 0 for disable
       EnableREALITY: false # Enable REALITY
       REALITYConfigs:
         Show: true # Show REALITY debug
@@ -657,7 +638,7 @@ if [[ $# > 0 ]]; then
         "multinode") generate_multinode ;;
         "defaultconfig") generate_config_default ;;
         "x25519") generate_x25519 ;;
-        "certificate") generate_certificate ;;
+        "cert") generate_certificate ;;
         "install") check_uninstall 0 && install 0 ;;
         "uninstall") check_install 0 && uninstall 0 ;;
         "version") check_install 0 && show_Aiko-Server_version 0 ;;
