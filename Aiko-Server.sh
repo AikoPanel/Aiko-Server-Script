@@ -354,21 +354,12 @@ generate_config_file() {
     if [[ $generate_config_file_continue =~ "y"|"Y" ]]; then
         echo -e "${yellow}Please select the PanelType of your server:${plain}"
         echo -e "${green}1. AikoPanel${plain}"
-        echo -e "${green}2. SSpanel${plain}"
-        echo -e "${green}3. V2board${plain}"
-        echo -e "${green}4. PMpanel${plain}"
-        echo -e "${green}5. Proxypanel${plain}"
-        echo -e "${green}6. V2RaySocks${plain}"
-        echo -e "${green}7. ZeroPanel${plain}"
+        echo -e "${green}2. AikoPanelv2${plain}"
+        echo -e "${green}Default: AikoPanel${plain}"
         read -rp "Please enter the PanelType (1-7, default 1): " PanelType
         case "$PanelType" in
             1 ) PanelType="AikoPanel" ;;
-            2 ) PanelType="SSpanel" ;;
-            3 ) PanelType="V2board" ;;
-            4 ) PanelType="PMpanel" ;;
-            5 ) PanelType="Proxypanel" ;;
-            6 ) PanelType="V2RaySocks" ;;
-            7 ) PanelType="ZeroPanel" ;;
+            2 ) PanelType="AikoPanelv2" ;;
             * ) PanelType="AikoPanel" ;;
         esac
         read -rp "Please enter the domain name of your server: " ApiHost
