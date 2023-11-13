@@ -5,8 +5,15 @@ Nodes:
       ApiKey: "123"
       NodeID: 41
       NodeType: V2ray # Node type: V2ray, Shadowsocks, Trojan
-      RuleListPath: # /etc/Aiko-Server/rulelist # Path of rulelist
+      Timeout: 30 # Timeout for the api request
+      EnableVless: false # Enable Vless for V2ray Type
+      RuleListPath: # /etc/Aiko-Server/rulelist Path to local rulelist file
+    ControllerConfig:
+      DisableLocalREALITYConfig: false
+      EnableREALITY: false
+      REALITYConfigs:
+        Show: true
       CertConfig:
-        CertMode: none # Option about how to get certificate: none, file. Choose "none" will forcedly disable the tls config.
+        CertMode: none # Option about how to get certificate: none, file
         CertFile: /etc/Aiko-Server/cert/aiko_server.cert # Provided if the CertMode is file
         KeyFile: /etc/Aiko-Server/cert/aiko_server.key
