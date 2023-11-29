@@ -104,20 +104,20 @@ install_Aiko-Server() {
     cd /usr/local/Aiko-Server/
 
     if  [ $# == 0 ] ;then
-        last_version=$(curl -Ls "https://api.github.com/repos/AikoPanel/Aiko-Server/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        last_version=$(curl -Ls "https://api.github.com/repos/AikoPanelv1/Aiko-Server/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
         if [[ ! -n "$last_version" ]]; then
             echo -e "${red}Failed to check Aiko-Server version. It may be due to exceeding the Github API limit. Please try again later or manually specify the Aiko-Server version for installation.${plain}"
             exit 1
         fi
         echo -e "Detected the latest version of Aiko-Server: ${last_version}, starting installation"
-        wget -q -N --no-check-certificate -O /usr/local/Aiko-Server/Aiko-Server-linux.zip https://github.com/AikoPanel/Aiko-Server/releases/download/${last_version}/Aiko-Server-linux-${arch}.zip
+        wget -q -N --no-check-certificate -O /usr/local/Aiko-Server/Aiko-Server-linux.zip https://github.com/AikoPanelv1/Aiko-Server/releases/download/${last_version}/Aiko-Server-linux-${arch}.zip
         if [[ $? -ne 0 ]]; then
             echo -e "${red}Failed to download Aiko-Server. Please make sure your server can download files from Github.${plain}"
             exit 1
         fi
     else
         last_version=$1
-        url="https://github.com/AikoPanel/Aiko-Server/releases/download/${last_version}/Aiko-Server-linux-${arch}.zip"
+        url="https://github.com/AikoPanelv1/Aiko-Server/releases/download/${last_version}/Aiko-Server-linux-${arch}.zip"
         echo -e "Starting installation of Aiko-Server v$1"
         wget -q -N --no-check-certificate -O /usr/local/Aiko-Server/Aiko-Server-linux.zip ${url}
         if [[ $? -ne 0 ]]; then
