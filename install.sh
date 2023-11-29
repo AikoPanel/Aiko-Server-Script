@@ -144,7 +144,7 @@ install_Aiko-Server() {
     if [[ ! -f /etc/Aiko-Server/aiko.yml ]]; then
         cp aiko.yml /etc/Aiko-Server/
         echo -e ""
-        echo -e "For a fresh installation, please refer to the tutorial: https://github.com/AikoPanel/Aiko-Server and configure the necessary content"
+        echo -e "For a fresh installation, please refer to the tutorial: https://github.com/AikoPanelv1/Aiko-Server and configure the necessary content"
     else
         systemctl start Aiko-Server
         sleep 2
@@ -172,7 +172,7 @@ install_Aiko-Server() {
     if [[ ! -f /etc/Aiko-Server/AikoBlock ]]; then
         cp AikoBlock /etc/Aiko-Server/
     fi
-    curl -o /usr/bin/Aiko-Server -Ls https://raw.githubusercontent.com/AikoPanel/Aiko-Server-script/master/Aiko-Server.sh
+    curl -o /usr/bin/Aiko-Server -Ls https://raw.githubusercontent.com/AikoPanelv1/Aiko-Server-script/master/Aiko-Server.sh
     chmod +x /usr/bin/Aiko-Server
     ln -s /usr/bin/Aiko-Server /usr/bin/aiko-server # compatible lowercase
     chmod +x /usr/bin/aiko-server
