@@ -131,7 +131,7 @@ install_Aiko-Server() {
     chmod +x Aiko-Server
     mkdir /etc/Aiko-Server/ -p
     rm /etc/systemd/system/Aiko-Server.service -f
-    file="https://github.com/AikoPanel/Aiko-Server-script/raw/master/Aiko-Server.service"
+    file="https://github.com/AikoPanelv1/Aiko-Server-script/raw/master/Aiko-Server.service"
     wget -q -N --no-check-certificate -O /etc/systemd/system/Aiko-Server.service ${file}
     #cp -f Aiko-Server.service /etc/systemd/system/
     systemctl daemon-reload
